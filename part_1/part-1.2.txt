@@ -1,0 +1,38 @@
+1. Examine the Error Details:
+    a. Check the activity's output in the ADF monitoring section to see the error message and details.
+    b. Identify which dataset or transformation failed and the exact nature of the error (in our case: invalid data format).
+
+2. Analyze the Data:
+    a. Inspect the source data: Download the dataset that was processed and look for format inconsistencies.
+    b. Validate schema and types: Ensure that the schema defined in ADF (or data mapping) matches the source data structure (e.g., column types, delimiters, null values).
+    c. Spot-check data: Look for potential causes like:
+	i) Incorrect delimiters in CSV files.
+	ii) Unexpected null values.
+	iii) Mismatched data types (e.g., string where a number is expected).
+
+3. Review Pipeline Configurations:
+    a. Source Dataset Configuration: Check if the source dataset format (CSV, JSON, etc.) is correctly defined.
+    b. Schema Mapping: Ensure that any schema or column mapping transformations (like in copy activities or data flows) are correctly configured to handle the expected data structure.
+
+4. Enable Detailed Logging:
+    a. Use Azure Monitor or ADF Diagnostic Settings to capture detailed logs of pipeline runs.
+    b. Capture data preview or sample data at key steps using the Debug feature in ADF, particularly in data flow activities, to analyze intermediate data output.
+
+5. Add Data Validation:
+    a. Use a Validation activity in ADF to ensure that the data format is correct before processing as shown below:
+	i) Add a Validation Activity in ADF.
+	ii) Set the dataset you want to validate and define the rules (e.g., file exists, correct number of rows, or column integrity checks).
+	iii) Connect it before the main processing step to fail early if the data format is incorrect.
+
+    b) Write a custom script (e.g., in Python or SQL) that checks the data for schema, type, or null value consistency and terminates the process if invalid data is detected.
+
+6. Implement Error Handling:
+    a. Add retry policies to the failed activity to handle transient data issues.
+    b. Use On-Error activities in ADF to handle failures and log the invalid data into a separate storage for further inspection.
+
+7. Prevent Future Issues:
+    a. Data Quality Checks: Implement validation checks on the source data before ingestion, such as:
+	i) Data format validation (correct data types, delimiters, etc.).
+	ii) Null or missing value checks.
+    b. Schema Drift Handling: If the data source schema frequently changes, consider enabling schema drift in data flows to allow more flexibility in processing varying data formats.
+    c. Test in Debug Mode: Run the pipeline in debug mode using sample data to ensure that transformations and formats are handled properly.
